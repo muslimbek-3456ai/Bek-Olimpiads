@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informatika va Dasturlash Olimpiadasi | MuslimbekDev</title>
+    <style>
+        :root {
+            --green-dark: #0f2d1e;
+            --green-primary: #1b4d3e;
+            --green-accent: #2ecc71;
+            --accent-gold: #f1c40f;
+            --expert-purple: #9b59b6;
+            
+            --red: #e21b3c;
+            --blue: #1368ce;
+            --yellow: #d89e00;
+            --green: #26890c;
+        }
+
+        body {
+            background: linear-gradient(135deg, #091811, #0f2d1e, #143826);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .page-container {
+            max-width: 950px;
+            margin: 30px auto;
+            padding: 0 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .site-banner {
+            text-align: center;
+            background: rgba(27, 77, 62, 0.4);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(46, 204, 113, 0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        .site-banner h1 {
+            margin: 0 0 10px 0;
+            font-size: 28px;
+            color: var(--green-accent);
+        }
+
+        .site-banner p {
+            margin: 0;
+            color: #a3c1ad;
+            font-size: 14px;
+        }
+
+        .class-selector-container {
+            background: rgba(27, 77, 62, 0.3);
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(46, 204, 113, 0.2);
+        }
+
+        .class-selector-container h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #e8f5e9;
+            font-size: 16px;
+        }
+
+        .class-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .class-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(46, 204, 113, 0.3);
+            color: white;
+            padding: 9px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .class-btn:hover {
+            background: var(--green-primary);
+            border-color: var(--green-accent);
+        }
+
+        .class-btn.active {
+            background: var(--green-accent);
+            color: #091811;
+            border-color: var(--green-accent);
+            box-shadow: 0 0 15px rgba(46, 204, 113, 0.4);
+        }
+
+        .class-btn.special-btn {
+            background: rgba(241, 196, 15, 0.15);
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+        }
+        .class-btn.special-btn.active, .class-btn.special-btn:hover {
+            background: var(--accent-gold);
+            color: #091811;
+            box-shadow: 0 0 15px rgba(241, 196, 15, 0.5);
+        }
+
+        .class-btn.expert-btn {
+            background: rgba(155, 89, 182, 0.2);
+            border-color: var(--expert-purple);
+            color: #e8d0f2;
+        }
+        .class-btn.expert-btn.active, .class-btn.expert-btn:hover {
+            background: var(--expert-purple);
+            color: white;
+            box-shadow: 0 0 15px rgba(155, 89, 182, 0.6);
+        }
+
+        .quiz-container {
+            background: #ffffff;
+            width: 100%;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+            color: #333;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #555;
+            border-bottom: 2px solid #f1f2f6;
+            padding-bottom: 12px;
+        }
+
+        .question-box {
+            background: #f1f8f5;
+            padding: 25px;
+            border-radius: 14px;
+            text-align: center;
+            margin-bottom: 25px;
+            border: 2px solid #d4ede1;
+        }
+
+        .question-box h2 {
+            margin: 0;
+            font-size: 20px;
+            color: #0f2d1e;
+            line-height: 1.4;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .option-btn {
+            min-height: 75px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.15s ease, filter 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 5px 0 rgba(0,0,0,0.2);
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .option-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 rgba(0,0,0,0.2);
+        }
+
+        .option-btn:hover {
+            filter: brightness(1.12);
+        }
+
+        .opt-0 { background-color: var(--red); }
+        .opt-1 { background-color: var(--blue); }
+        .opt-2 { background-color: var(--yellow); color: #222; }
+        .opt-3 { background-color: var(--green); }
+
+        .modal-btn {
+            background: var(--green-primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .modal-btn:hover { background: var(--green-dark); }
+        .modal-btn:active { transform: scale(0.98); }
+
+        .name-input {
+            width: 80%;
+            max-width: 300px;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #d4ede1;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+            outline: none;
+        }
+        .name-input:focus { border-color: var(--green-primary); }
+
+        .leaderboard-box {
+            text-align: left;
+            margin-top: 25px;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+        }
+        .leaderboard-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--green-primary);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 12px;
+            margin-bottom: 5px;
+            background: white;
+            border-radius: 6px;
+            font-size: 14px;
+            border: 1px solid #eee;
+        }
+        .leaderboard-item:nth-child(1) { background: #fff3cd; border-color: #ffeeba; font-weight: bold; }
+        .leaderboard-item:nth-child(2) { background: #e2e3e5; border-color: #d6d8db; font-weight: bold; }
+        .leaderboard-item:nth-child(3) { background: #f8d7da; border-color: #f5c6cb; font-weight: bold; }
+
+        .review-list {
+            text-align: left;
+            max-height: 250px;
+            overflow-y: auto;
+            margin-top: 15px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+        .review-item {
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .review-correct { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .review-incorrect { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        footer {
+            text-align: center;
+            padding: 25px 20px;
+            color: #a3c1ad;
+            font-size: 13px;
+            border-top: 1px solid rgba(46, 204, 113, 0.1);
+            background: rgba(9, 24, 17, 0.6);
+            margin-top: 30px;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 650px) {
+            .options-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-container">
+        <div class="site-banner">
+            <h1>Informatika va Dasturlash Olimpiadasi</h1>
+            <p>Professional darajadagi mantiqiy va zamonaviy algoritmik savollar bazasi</p>
+        </div>
+
+        <div class="class-selector-container">
+            <h3>Sinf yoki maxsus bosqichni tanlang:</h3>
+            <div class="class-buttons" id="class-buttons-group">
+                <button class="class-btn" onclick="selectClass(5, this)">5-sinf</button>
+                <button class="class-btn" onclick="selectClass(6, this)">6-sinf</button>
+                <button class="class-btn" onclick="selectClass(7, this)">7-sinf</button>
+                <button class="class-btn" onclick="selectClass(8, this)">8-sinf</button>
+                <button class="class-btn active" onclick="selectClass(9, this)">9-sinf</button>
+                <button class="class-btn" onclick="selectClass(10, this)">10-sinf</button>
+                <button class="class-btn" onclick="selectClass(11, this)">11-sinf</button>
+                <button class="class-btn special-btn" onclick="selectClass('general50', this)">⚡ Umumiy 50 Talik</button>
+                <button class="class-btn expert-btn" onclick="selectClass('expert', this)">🧠 Ekspert Tayyorgarligi</button>
+            </div>
+        </div>
+
+        <div class="quiz-container">
+            <!-- Boshlash ekrani -->
+            <div id="start-screen">
+                <h2 style="color: var(--green-primary); margin-top: 0;">Olimpiadaga xush kelibsiz!</h2>
+                <p style="color: #666; font-size: 15px; line-height: 1.5; margin-bottom: 20px;">
+                    Testni boshlashdan oldin ism va familiyangizni kiriting:
+                </p>
+                <div>
+                    <input type="text" id="username-input" class="name-input" placeholder="Ism va Familiya" maxlength="25">
+                </div>
+                <button class="modal-btn" onclick="startQuiz()">Boshlash 🚀</button>
+
+                <!-- Liderlar jadvali bosh sahifada ham ko'rinadi -->
+                <div class="leaderboard-box">
+                    <div class="leaderboard-title">🏆 Top Liderlar (Reyting)</div>
+                    <div id="home-leaderboard-list">
+                        <div style="text-align: center; color: #777; font-size: 13px;">Hali natijalar mavjud emas</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Savollar ekrani -->
+            <div id="quiz-screen" style="display: none;">
+                <div class="quiz-header">
+                    <span id="progress-indicator">Savol: 1 / 10</span>
+                    <span id="timer">⏳ 25</span>
+                    <span id="score">🏆 Ball: 0</span>
+                </div>
+
+                <div class="question-box">
+                    <h2 id="question-text">Savol yuklanmoqda...</h2>
+                </div>
+
+                <div class="options-grid" id="options-grid">
+                    <button class="option-btn opt-0" onclick="checkAnswer(0)"></button>
+                    <button class="option-btn opt-1" onclick="checkAnswer(1)"></button>
+                    <button class="option-btn opt-2" onclick="checkAnswer(2)"></button>
+                    <button class="option-btn opt-3" onclick="checkAnswer(3)"></button>
+                </div>
+            </div>
+
+            <!-- Natijalar ekrani -->
+            <div id="result-screen" style="display: none;">
+                <h1 style="color: var(--green-primary);">Olimpiada yakunlandi! 🏆</h1>
+                <h3 id="result-user-name"></h3>
+                <p id="final-score-text" style="font-size: 18px; font-weight: bold;"></p>
+                <p id="readiness-text" style="font-size: 15px; margin: 10px 0;"></p>
+                
+                <h4 style="margin-top: 20px; color: #333; text-align: left;">Sizning javoblar tahlilingiz:</h4>
+                <div class="review-list" id="review-list"></div>
+
+                <div class="leaderboard-box" style="margin-top: 20px;">
+                    <div class="leaderboard-title">🥇 Eng yaxshi natijalar reytingi</div>
+                    <div id="result-leaderboard-list"></div>
+                </div>
+
+                <button onclick="resetToStart()" class="modal-btn" style="margin-top: 20px;">Qaytadan bosh sahifaga</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>«MuslimbekDev» loyihalaridan nusxa ko‘chirish va tarqatish faqat muallif roziligi bilan amalga oshiriladi.</p>
+        <p>Muassis va Dasturchi: Muslimbek Mamarasulov | Barcha huquqlar himoyalangan.</p>
+    </footer>
+
+    <script>
+        let userName = "Olimpiadachi";
+        let currentClass = 9;
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timeLeft = 25;
+        let timerInterval = null;
+        let userAnswers = [];
+        let isAnswerProcessing = false;
+        
+        let leaderboard = [];
+
+        const gradeQuestions = {
+            5: [
+                { q: "Axborot o'lchov birliklari orasida eng kichigini ko'rsating:", options: ["Bit", "Bayt", "Kilobayt", "Megabayt"], correct: 0 },
+                { q: "Quyidagilardan qaysi biri qattiq disk (HDD/SSD) xususiyati emas?", options: ["Ma'lumotni uzoq saqlash", "Tezkor hisob-kitob qilish", "Hajmi Gigabaytlarda o'lchanishi", "Ma'lumot yozish va o'qish"], correct: 1 },
+                { q: "Blaknot yoki Matn muharririda yozilgan fayl kengaytmasi odatda qanday bo'ladi?", options: [".txt", ".mp4", ".png", ".exe"], correct: 0 },
+                { q: "Algoritmik qadamlar qanday bajarilishi shart?", options: ["Aniq va izchil ketma-ketlikda", "Ixtiyoriy tartibda", "Faqat teskari tartibda", "Tasodifiy"], correct: 0 },
+                { q: "Tarmoqdagi har bir kompyuterga beriladigan o'ziga xos raqamli manzil qanday nomlanadi?", options: ["IP manzil", "Fayl nomi", "Dastur kodi", "Server"], correct: 0 },
+                { q: "Kompyuter xotirasidan o'chirilgan fayllar dastlab qayerga tushadi?", options: ["Chiqindi qutisi (Recycle Bin)", "Fleshkaga", "Monitor ekraniga", "Printerga"], correct: 0 },
+                { q: "Chiziqli algoritm nima?", options: ["Buyruqlar ketma-ket, birin-ketin bajariladigan algoritm", "Shartga qarab tarmoqlanuvchi algoritm", "Takrorlanuvchi algoritm", "Cheksiz sikl"], correct: 0 },
+                { q: "Quyidagilardan qaysi biri axborotni kiritish qurilmasi hisoblanadi?", options: ["Sichqoncha", "Karnay (Dinamik)", "Monitor", "Printer"], correct: 0 },
+                { q: "Kompyuter viruslaridan himoyalanish uchun qanday dastur ishlatiladi?", options: ["Antivirus", "Paint", "Excel", "Notepad"], correct: 0 },
+                { q: "Axborotni tashish va saqlash uchun nima ishlatiladi?", options: ["Flesh xotira (USB Flash)", "Karnay", "Kabel", "Tok"], correct: 0 }
+            ],
+            6: [
+                { q: "1 Megabayt (MB) necha Kilobaytga (KB) teng?", options: ["1024 KB", "1000 KB", "512 KB", "2048 KB"], correct: 0 },
+                { q: "Tarmoqda ma'lumot uzatishni ta'minlovchi qoidalar majmui nima deyiladi?", options: ["Protokol", "Brauzer", "Server", "Kabel"], correct: 0 },
+                { q: "Tarmoqlanuvchi algoritm qachon ishlatiladi?", options: ["Shart tekshirilganda va uning natijasiga ko'ra yo'nalish tanlanganda", "Faqat bir xil buyruqlar takrorlanganda", "Faqat matn yozganda", "Faqat o'yin o'ynaganda"], correct: 0 },
+                { q: "2 lik sanoq sistemasida asosiy raqamlar qaysilar?", options: ["0 va 1", "1 va 2", "0 dan 9 gacha", "A, B, C"], correct: 0 },
+                { q: "Internet tarmog'ining asosiy xizmatlaridan biri bo'lgan WWW nimani anglatadi?", options: ["World Wide Web", "Window Web World", "Web Wide Work", "World Wire Web"], correct: 0 },
+                { q: "Elektron jadval dasturini ko'rsating:", options: ["Microsoft Excel", "Microsoft Word", "Paint", "Notepad"], correct: 0 },
+                { q: "Quyidagilardan qaysi biri mantiqiy amalga kiradi?", options: ["AND (VA)", "PLUS (Qo'shish)", "PRINT (Chiqarish)", "SAVE (Saqlash)"], correct: 0 },
+                { q: "Kompyuter xotirasining eng kichik manzillanadigan birligi nima?", options: ["Bayt", "Bit", "Kilobayt", "Gigabayt"], correct: 0 },
+                { q: "Dastur bajarilish jarayonida o'z qiymatini o'zgartira oladigan kattalik nima deb ataladi?", options: ["O'zgaruvchi (Variable)", "Konstafta", "Fayl", "Matn"], correct: 0 },
+                { q: "Prezentatsiya yaratishda har bir sahifa qanday nomlanadi?", options: ["Slayd", "Sahifa", "Varoq", "Kadr"], correct: 0 }
+            ],
+            7: [
+                { q: "O'n oltilik sanoq sistemasida 10 soni qanday harf bilan belgilanadi?", options: ["A", "B", "F", "X"], correct: 0 },
+                { q: "Takrorlanuvchi algoritm (sikl) nima uchun kerak?", options: ["Muayyan amallarni bir necha bor qayta bajarish uchun", "Faqat bir marta hisoblash uchun", "Tarmoqni o'chirish uchun", "Xatolarni topish uchun"], correct: 0 },
+                { q: "Python tilida ekranga ma'lumot chiqarish buyrug'i qaysi?", options: ["print()", "input()", "scan()", "write()"], correct: 0 },
+                { q: "Ikki lik sanoq sistemasidagi 1010 soni o'n lik sanoq sistemasida nechiga teng?", options: ["10", "12", "8", "6"], correct: 0 },
+                { q: "HTML tili yordamida nima yaratiladi?", options: ["Web-sahifalar tuzilishi", "Matematik formulalar", "Antivirus bazasi", "Kompyuter o'yini grafika drayveri"], correct: 0 },
+                { q: "Dasturlashda 'Bug' so'zi nimani anglatadi?", options: ["Dastur kodidagi xatolik", "Kichik o'yinchoq", "Tezlik o'lchovi", "Xotira turi"], correct: 0 },
+                { q: "Mantiqiy ko'paytirish (AND) amali natijasi 1 ga teng bo'lishi uchun nima talab qilinadi?", options: ["Barcha kirish qiymatlari 1 bo'lishi kerak", "Faqat bittasi 1 bo'lishi yetarli", "Barchasi 0 bo'lishi kerak", "Farqi yo'q"], correct: 0 },
+                { q: "Informatikada 'Graf' nima?", options: ["Cho'qqilar va qirralardan iborat tuzilma", "Faqat chiziqli jadval", "Rasm formati", "Internet tezligi"], correct: 0 },
+                { q: "C++ tilida butun sonlarni e'lon qilish uchun qaysi kalit so'z ishlatiladi?", options: ["int", "float", "char", "string"], correct: 0 },
+                { q: "Axborotni shifrlash nima uchun qo'llaniladi?", options: ["Xavfsizlikni ta'minlash va ruxsatsiz o'qishdan saqlash", "Fayl hajmini kattalashtirish", "Internetni tezlashtirish", "Kompyuterni qizdirish"], correct: 0 }
+            ],
+            8: [
+                { q: "Tarmoq topologiyasi turlariga qaysilar kiradi?", options: ["Yulduzsimon, halqasimon, magistral", "Faqat chiziqli", "Faqat doiraviy", "Faqat tarqoq"], correct: 0 },
+                { q: "Python dasturida shart operatori qaysi?", options: ["if", "for", "while", "def"], correct: 0 },
+                { q: "Quyidagi algoritm natijasini toping: a=5; b=3; if a>b: a=a+b; else: b=b+a; print(a)", options: ["8", "3", "5", "10"], correct: 0 },
+                { q: "Massiv (Array) nima?", options: ["Bir xil turdagi tartiblangan ma'lumotlar to'plami", "Bitta o'zgaruvchi", "Internet porti", "Fayl kengaytmasi"], correct: 0 },
+                { q: "Dastur kodini mashina tiliga o'tkazib beruvchi maxsus dastur nima deb ataladi?", options: ["Kompilyator / Interpreter", "Brauzer", "Redaktor", "Drayver"], correct: 0 },
+                { q: "O'nlik sanoq sistemasidagi 25 soni 2 lik sanoq sistemasida qanday yoziladi?", options: ["11001", "10101", "11100", "10011"], correct: 0 },
+                { q: "Funksiya deganda nima tushuniladi?", options: ["Muayyan vazifani bajaruvchi nomlangan kod bo'lagi", "Faqat o'zgaruvchi", "Xato turi", "Xotira bloki"], correct: 0 },
+                { q: "Ma'lumotlar bazasida ustunlar qanday nomlanadi?", options: ["Maydon (Field)", "Yozuv (Record)", "Jadval", "Kortej"], correct: 0 },
+                { q: "Python'da ro'yxat (list) elementlarini qavs ichida yozamiz?", options: ["To'rtburchak qavs [...]", "Mavhum qavs {...}", "Dumaloq qavs (...)", "Burchakli qavs <...>"], correct: 0 },
+                { q: "Kiberxavfsizlikda 'Phishing' (Fishing) atamasi nimani anglatadi?", options: ["Soxta sahifalar orqali shaxsiy ma'lumotlarni o'g'irlash", "Tezkor internetni ulash", "Dastur kodini tekshirish", "Virusni yo'q qilish"], correct: 0 }
+            ],
+            9: [
+                { q: "Al-Xorazmiy nomi bilan bog'liq 'Algoritm' tushunchasining dastlabki ma'nosi nima edi?", options: ["Hisob-kitob qoidalari va amallari ketma-ketligi", "Faqat kompyuter dasturi", "Matematik formula", "Geometrik shakl"], correct: 0 },
+                { q: "Quyidagi sikl necha marta ishlaydi? for i in range(1, 10, 2):", options: ["5 marta", "10 marta", "9 marta", "4 marta"], correct: 0 },
+                { q: "C++ tilida massiv elementiga murojaat qilish qaysi qavsda bajariladi?", options: ["[...] (Kvadrat qavs)", "(...)", "{...}", "<...>"], correct: 0 },
+                { q: "Graflarda minimal karkas daraxtini (Minimum Spanning Tree) topish uchun qaysi algoritm ishlatiladi?", options: ["Kruskal yoki Prim algoritmi", "Evklid algoritmi", "Binar qidiruv", "Pufakchali saralash"], correct: 0 },
+                { q: "IPv4 manzilining uzunligi necha bitni tashkil qiladi?", options: ["32 bit", "64 bit", "128 bit", "16 bit"], correct: 0 },
+                { q: "Chiziqli qidiruv algoritmining eng yomon holatdagi (Worst-case) vaqt murakkabligi qanday?", options: ["O(N)", "O(log N)", "O(N^2)", "O(1)"], correct: 0 },
+                { q: "Dasturlashda rekursiya nima?", options: ["Funksiyaning o'zini o'zi chaqirishi", "Sikldan chiqib ketish", "Massivni teskari o'girish", "Xatolarni ushlash"], correct: 0 },
+                { q: "Logik amallardan biri bo'lgan XOR (Istisno yoki) amali qachon 1 ga teng bo'ladi?", options: ["Kirish qiymatlari har xil bo'lganda (0 va 1, yoki 1 va 0)", "Ikkalasi ham 1 bo'lganda", "Ikkalasi ham 0 bo'lganda", "Doim 1 bo'ladi"], correct: 0 },
+                { q: "Python tilida 'dictionary' (lug'at) ma'lumotlar tuzilmasi nimadan iborat?", options: ["Kalit va qiymat (Key-Value) juftligidan", "Faqat tartiblangan raqamlardan", "Faqat matnlardan", "Indekslardan"], correct: 0 },
+                { q: "Ma'lumotlar bazasining asosiy kaliti (Primary Key) vazifasi nima?", options: ["Har bir yozuvni unikal (takrorlanmas) aniqlash", "Faqat parol saqlash", "Jadval hajmini kamaytirish", "Rang berish"], correct: 0 }
+            ],
+            10: [
+                { q: "Saralash algoritmlari orasida eng yaxshi o'rtacha murakkablikka ega bo'lgan solishtiruvli algoritm qaysi?", options: ["O(N log N) (Merge Sort / Quick Sort)", "O(N^2) (Bubble Sort)", "O(N) (Linear)", "O(1) (Constant)"], correct: 0 },
+                { q: "Dinamik dasturlash (Dynamic Programming) usulining asosiy prinsipi nima?", options: ["Katta masalani kichik qism masalalarga bo'lib, natijalarni eslab qolish (memoization)", "Faqat tasodifiy tanlash", "Har doim faqat eng katta qiymatni olish", "Barcha variantlarni tekshirib chiqmaslik"], correct: 0 },
+                { q: "Stek (Stack) ma'lumotlar tuzilmasining ishlash prinsipi qanday?", options: ["LIFO (Last In, First Out - Oxirgi kelgan birinchi chiqadi)", "FIFO", "Tasodifiy", "Tartibli"], correct: 0 },
+                { q: "Navbat (Queue) ma'lumotlar tuzilmasi qanday tamoyilga asoslanadi?", options: ["FIFO (First In, First Out - Birinchi kelgan birinchi chiqadi)", "LIFO", "LILO", "Random"], correct: 0 },
+                { q: "Binar qidiruv (Binary Search) algoritmini qo'llash uchun boshlang'ich massiv qanday bo'lishi shart?", options: ["Saralangan (tartiblangan) bo'lishi kerak", "Ixtiyoriy tartibda bo'lishi mumkin", "Faqat manfiy sonlardan iborat bo'lishi kerak", "Faqat matn bo'lishi kerak"], correct: 0 },
+                { q: "Binar qidiruvning vaqt murakkabligi qanday?", options: ["O(log N)", "O(N)", "O(N^2)", "O(1)"], correct: 0 },
+                { q: "Obyektga yo'naltirilgan dasturlash (OYD) tamoyillariga nima kirmaydi?", options: ["Kommutatsiya", "Inkapsulyatsiya", "Polimorfizm", "Merosxo'rlik"], correct: 0 },
+                { q: "Graflarda eng qisqa yo'lni topish uchun mo'ljallangan algoritm qaysi?", options: ["Deykstra (Dijkstra) algoritmi", "Pufakchali saralash", "Evklid", "Binar qidiruv"], correct: 0 },
+                { q: "C++ tilida dinamik massiv vazifasini bajaruvchi konteyner qaysi?", options: ["std::vector", "std::stack", "std::queue", "std::string"], correct: 0 },
+                { q: "Ma'lumotlar bazasida jadvallar orasidagi bog'lanish turlariga nima kirmaydi?", options: ["One-to-Infinity (Cheksiz)", "One-to-One (Birni-birga)", "One-to-Many (Birni-ko'pga)", "Many-to-Many (Ko'pni-ko'pga)"], correct: 0 }
+            ],
+            11: [
+                { q: "NP-to'liq (NP-Complete) masalalar sinfiga oid mashhur misolni toping:", options: ["Sayohat qiluvchi sotuvchi masalasi (TSP)", "Ikki sonni qo'shish masalasi", "Chiziqli tenglamani yechish", "Massivni tartiblash"], correct: 0 },
+                { q: "Ochko'z (Greedy) algoritmlarning asosiy mohiyati nimadan iborat?", options: ["Har bir qadamda eng maqbul mahalliy yechimni tanlab borish", "Barcha mukammal global imkoniyatlarni oxirigacha hisoblash", "Faqat teskari tartibda yurish", "Tasodifiy yo'lni tanlash"], correct: 0 },
+                { q: "Asinxron (Asynchronous) dasturlash nima uchun qo'llaniladi?", options: ["Asosiy oqimni (main thread) bloklamasdan parallel operatsiyalarni bajarish uchun", "Dasturni ataylab sekinlashtirish uchun", "Xotirani to'ldirish uchun", "Faqat rangli interfeys yaratish uchun"], correct: 0 },
+                { q: "Kriptografiyada ochiq kalitli (asimetrik) shifrlash algoritmiga misol:", options: ["RSA", "AES", "DES", "3DES"], correct: 0 },
+                { q: "Sun'iy intellekt va mashinali o'qitishda ma'lumotlarni qayta ishlash uchun ko'p ishlatiladigan til:", options: ["Python", "HTML", "CSS", "Assembly"], correct: 0 },
+                { q: "Blokcheyn texnologiyasining asosiy ustunligi nimada?", options: ["Markazlashmagan va ma'lumotlarni o'zgartirib bo'lmasligi", "Tez o'chirilishi", "Faqat bitta serverda saqlanishi", "Parolsiz ishlashi"], correct: 0 },
+                { q: "Tarmoq arxitekturasida TCP va UDP protokollari qaysi qatlamga tegishli?", options: ["Transport qatlami", "Fizik qatlam", "Ilova qatlami", "Kanal qatlami"], correct: 0 },
+                { q: "Big O notation (Katta O belgisi) nimani ifodalaydi?", options: ["Algoritmning resurs (vaqt/xotira) sarfi o'sish tezligini", "Kompyuter protsessorining chastotasini", "Internet tezligini", "Dastur fayl hajmini"], correct: 0 },
+                { q: "Dasturiy ta'minotni ishlab chiqishda 'Agile' metodologiyasining asosiy g'oyasi nima?", options: ["O'zgarishlarga tez moslashish va bosqichma-bosqich yetkazib berish", "Faqat loyiha oxirida sinovdan o'tkazish", "Qat'iy va o'zgarmas reja bo'yicha ishlash", "Hujjat yozishni cheklash"], correct: 0 },
+                { q: "Matematik mantiqda 'De Morgan' qonunlari nima uchun qo'llaniladi?", options: ["Mantiqiy ifodalarni soddalashtirish va inkor qilish uchun", "Faqat sonlarni bo'lish uchun", "Matritsalarni ko'paytirish uchun", "Fayllarni arxivlash uchun"], correct: 0 }
+            ],
+            expert: [
+                { q: "Segment daraxti (Segment Tree) yordamida massivda kesmada yig'indini topish va elementni yangilash operatsiyalarining vaqt murakkabligi qanday?", options: ["O(log N)", "O(N)", "O(N log N)", "O(1)"], correct: 0 },
+                { q: "Tarjan algoritmi graflarda nima qilish uchun ishlatiladi?", options: ["Kuchli bog'langan komponentlarni (SCC) topish uchun", "Eng qisqa yo'lni topish uchun", "Minimal karkas daraxtini qurish uchun", "Oqimni hisoblash uchun"], correct: 0 },
+                { q: "Quyidagilardan qaysi biri NP-hard masalaga misol bo'la olmaydi?", options: ["Minimal qamrovchi daraxt (MST) masalasi", "Ryukzak (Knapsack) masalasi (umumiy holatda)", "Sayohat qiluvchi sotuvchi masalasi (TSP)", "Kliko (Clique) masalasi"], correct: 0 },
+                { q: "Beshiksimon to'qnashuvni bartaraf etuvchi hashing usulida 'Chained hashing' (Zanjirli xesh) qanday ishlatiladi?", options: ["To'qnash kelgan elementlarni bog'langan ro'yxat (linked list) orqali saqlash", "Keyingi bo'sh katakka yozish", "Xesh funksiyasini qaytadan hisoblash", "Massiv hajmini ikki barobar kamaytirish"], correct: 0 },
+                { q: "Bellman-Ford algoritmining Deykstra (Dijkstra) algoritmidan asosiy farqi nimada?", options: ["Manfiy og'irlikka ega qirralar bilan ham ishlay oladi", "Faqat yo'naltirilmagan graflarda ishlaydi", "Tezroq ishlaydi O(N log N)", "Faqat musbat sonlarni qabul qiladi"], correct: 0 },
+                { q: "KMP (Knut-Morris-Prat) qidiruv algoritmi nimaga mo'ljallangan?", options: ["Matn ichidan substring (satr) qidirishni tezlashtirish", "Sonlarni tez saralash", "Binar daraxtni muvozanatlash", "Graflarda sikl topish"], correct: 0 },
+                { q: "2-SAT masalasini chiziqli vaqtda O(N+M) yechish uchun qaysi ma'lumotlar tuzilmasi yoki algoritm qo'llaniladi?", options: ["Kuchli bog'langan komponentlar (Tarjan / Kosaraju)", "Faqat q Greedy usul", "Dinamik dasturlash", "Faqat binar qidiruv"], correct: 0 },
+                { q: "Maksimal oqim (Maximum Flow) masalasini yechish uchun Ford-Fulkerson metodining optimallashtirilgan turi qanday nomlanadi?", options: ["Edmonds-Karp algoritmi", "Kruskal algoritmi", "Prim algoritmi", "Floyd-Warshall algoritmi"], correct: 0 },
+                { q: "Fenwick tree (Binary Indexed Tree) tuzilmasining xotira sig'imi qanday?", options: ["O(N)", "O(N log N)", "O(N^2)", "O(1)"], correct: 0 },
+                { q: "Dinamik dasturlashda 'Bitmask DP' usuli odatda qanday cheklangan chegaradagi masalalar uchun ishlatiladi?", options: ["N kichik bo'lgan hollarda (odatda N <= 20)", "Juda katta N sonlar uchun", "Faqat massivsiz masalalar uchun", "Faqat satrlar uchun"], correct: 0 }
+            ]
+        };
+
+        gradeQuestions['general50'] = [
+            ...gradeQuestions[5], 
+            ...gradeQuestions[6], 
+            ...gradeQuestions[7], 
+            ...gradeQuestions[8], 
+            ...gradeQuestions[9], 
+            ...gradeQuestions[10], 
+            ...gradeQuestions[11]
+        ];
+
+        window.onload = function() {
+            prepareClass(9, document.querySelector('.class-btn.active'));
+            updateLeaderboardUI();
+        };
+
+        function selectClass(className, btnElement) {
+            currentClass = className;
+            document.querySelectorAll(".class-btn").forEach(btn => btn.classList.remove("active"));
+            if(btnElement) {
+                btnElement.classList.add("active");
+            }
+            prepareClass(className);
+        }
+
+        function prepareClass(className) {
+            if (timerInterval) clearInterval(timerInterval);
+            isAnswerProcessing = false;
+
+            let rawQuestions = gradeQuestions[className] || gradeQuestions[9];
+            let cloned = JSON.parse(JSON.stringify(rawQuestions));
+            
+            for (let i = cloned.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [cloned[i], cloned[j]] = [cloned[j], cloned[i]];
+            }
+
+            questions = cloned.map(item => {
+                let optionsWithIndex = item.options.map((opt, idx) => ({ text: opt, originalIndex: idx }));
+                for (let i = optionsWithIndex.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [optionsWithIndex[i], optionsWithIndex[j]] = [optionsWithIndex[j], optionsWithIndex[i]];
+                }
+                let newCorrect = optionsWithIndex.findIndex(o => o.originalIndex === item.correct);
+                return {
+                    q: item.q,
+                    options: optionsWithIndex.map(o => o.text),
+                    correct: newCorrect
+                };
+            });
+
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            
+            document.getElementById("start-screen").style.display = "block";
+            document.getElementById("quiz-screen").style.display = "none";
+            document.getElementById("result-screen").style.display = "none";
+            updateLeaderboardUI();
+        }
+
+        function startQuiz() {
+            let inputVal = document.getElementById("username-input").value.trim();
+            if (inputVal !== "") {
+                userName = inputVal;
+            } else {
+                userName = "Olimpiadachi";
+            }
+
+            if (timerInterval) clearInterval(timerInterval);
+            isAnswerProcessing = false;
+            document.getElementById("start-screen").style.display = "none";
+            document.getElementById("quiz-screen").style.display = "block";
+            document.getElementById("score").innerText = `🏆 Ball: ${score}`;
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            if (timerInterval) clearInterval(timerInterval);
+            isAnswerProcessing = false;
+
+            timeLeft = currentClass === 'expert' ? 40 : (currentClass === 'general50' ? 30 : 25);
+            document.getElementById("timer").innerText = `⏳ ${timeLeft}`;
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById("timer").innerText = `⏳ ${timeLeft}`;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    if (!isAnswerProcessing) {
+                        checkAnswer(-1);
+                    }
+                }
+            }, 1000);
+
+            let qData = questions[currentQuestionIndex];
+            let labelTitle = currentClass === 'expert' ? 'Ekspert Tayyorgarligi' : (currentClass === 'general50' ? 'Umumiy 50 talik' : `${currentClass}-sinf`);
+            document.getElementById("progress-indicator").innerText = `${labelTitle} | Savol: ${currentQuestionIndex + 1} / ${questions.length}`;
+            document.getElementById("question-text").innerText = qData.q;
+
+            let buttons = document.querySelectorAll(".option-btn");
+            qData.options.forEach((optText, idx) => {
+                buttons[idx].innerText = optText;
+            });
+        }
+
+        function checkAnswer(selectedOption) {
+            if (isAnswerProcessing) return;
+            isAnswerProcessing = true;
+
+            if (timerInterval) clearInterval(timerInterval);
+            let qData = questions[currentQuestionIndex];
+
+            let isCorrect = (selectedOption === qData.correct);
+            if (isCorrect) {
+                score += timeLeft * 10;
+                document.getElementById("score").innerText = `🏆 Ball: ${score}`;
+            }
+
+            userAnswers.push({
+                question: qData.q,
+                selected: selectedOption !== -1 ? qData.options[selectedOption] : "Vaqt tugadi",
+                correctAnswer: qData.options[qData.correct],
+                isCorrect: isCorrect
+            });
+
+            currentQuestionIndex++;
+            
+            setTimeout(() => {
+                if (currentQuestionIndex < questions.length) {
+                    loadQuestion();
+                } else {
+                    showResults();
+                }
+            }, 200);
+        }
+
+        function showResults() {
+            if (timerInterval) clearInterval(timerInterval);
+            document.getElementById("quiz-screen").style.display = "none";
+            document.getElementById("result-screen").style.display = "block";
+
+            let maxPossibleScore = questions.length * (currentClass === 'expert' ? 400 : 300);
+            let percentage = maxPossibleScore > 0 ? Math.round((score / maxPossibleScore) * 100) : 0;
+            if (percentage > 100) percentage = 100;
+            if (percentage < 0) percentage = 0;
+
+            let labelTitle = currentClass === 'expert' ? 'Ekspert Tayyorgarligi' : (currentClass === 'general50' ? 'Umumiy 50 talik' : `${currentClass}-sinf`);
+            document.getElementById("result-user-name").innerText = `Ishtirokchi: ${userName} (${labelTitle})`;
+            document.getElementById("final-score-text").innerText = `Umumiy to'plangan ball: ${score}`;
+
+            // Reytingga yangi natijani qo'shish
+            leaderboard.push({ name: userName, score: score, category: labelTitle });
+            leaderboard.sort((a, b) => b.score - a.score); // Ball bo'yicha kamayish tartibida saralash
+            leaderboard = leaderboard.slice(0, 5); // Faqat top 5 talikni saqlash
+            localStorage.setItem('olimpiada_leaderboard', JSON.stringify(leaderboard));
+
+            let readinessElement = document.getElementById("readiness-text");
+            if (percentage >= 65) {
+                readinessElement.innerHTML = `Tabriklaymiz! Siz chinakam olimpiada darajasini ko'rsatdingiz! 🥇`;
+                readinessElement.style.color = "#2ecc71";
+            } else {
+                readinessElement.innerHTML = "Algoritmik bilimlarni yanada kuchaytirib, qayta urinib ko'ring! 📚";
+                readinessElement.style.color = "#f39c12";
+            }
+
+            let reviewContainer = document.getElementById("review-list");
+            reviewContainer.innerHTML = "";
+            userAnswers.forEach((item, index) => {
+                let div = document.createElement("div");
+                div.className = `review-item ${item.isCorrect ? 'review-correct' : 'review-incorrect'}`;
+                div.innerHTML = `<strong>${index + 1}. ${item.question}</strong><br>
+                                 Sizning javobingiz: ${item.selected} ${item.isCorrect ? '✅' : '❌'}<br>
+                                 ${!item.isCorrect ? `To'g'ri javob: <b>${item.correctAnswer}</b>` : ''}`;
+                reviewContainer.appendChild(div);
+            });
+
+            updateLeaderboardUI();
+        }
+
+        function updateLeaderboardUI() {
+            let homeHtml = "";
+            let resultHtml = "";
+
+            if (leaderboard.length === 0) {
+                homeHtml = `<div style="text-align: center; color: #777; font-size: 13px;">Hali natijalar mavjud emas</div>`;
+                resultHtml = `<div style="text-align: center; color: #777; font-size: 13px;">Hali natijalar mavjud emas</div>`;
+            } else {
+                leaderboard.forEach((item, index) => {
+                    let medal = index === 0 ? "🥇" : (index === 1 ? "🥈" : (index === 2 ? "🥉" : "🔹"));
+                    let row = `<div class="leaderboard-item">
+                                   <span>${medal} ${index + 1}-o'rin: <b>${item.name}</b> <small style="color:#666">(${item.category})</small></span>
+                                   <span><b>${item.score} ball</b></span>
+                               </div>`;
+                    homeHtml += row;
+                    resultHtml += row;
+                });
+            }
+
+            document.getElementById("home-leaderboard-list").innerHTML = homeHtml;
+            document.getElementById("result-leaderboard-list").innerHTML = resultHtml;
+        }
+
+        function resetToStart() {
+            prepareClass(currentClass);
+        }
+    </script>
+</body>
+</html>
