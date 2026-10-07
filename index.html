@@ -382,7 +382,7 @@
     </div>
 
     <footer>
-        <p>«MuslimbekDev» loyihalaridan nusxa ko‘chirish va tarqatish faqat muallif roziligi bilan amalga oshiriladi.</p>
+        <p>«Muslimbek» loyihalaridan nusxa ko‘chirish va tarqatish faqat muallif roziligi bilan amalga oshiriladi.</p>
         <p>Muassis va Dasturchi: Muslimbek Mamarasulov | Barcha huquqlar himoyalangan.</p>
     </footer>
 
@@ -397,7 +397,15 @@
         let userAnswers = [];
         let isAnswerProcessing = false;
         
-        let leaderboard = [];
+        let leaderboard = JSON.parse(localStorage.getItem('olimpiada_leaderboard')) || [];
+
+        // Boshqa oyna yoki tablarda reyting o'zgarsa, uni avtomatik yangilab turish
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'olimpiada_leaderboard') {
+                leaderboard = JSON.parse(e.newValue) || [];
+                updateLeaderboardUI();
+            }
+        });
 
         const gradeQuestions = {
             5: [
@@ -410,7 +418,17 @@
                 { q: "Chiziqli algoritm nima?", options: ["Buyruqlar ketma-ket, birin-ketin bajariladigan algoritm", "Shartga qarab tarmoqlanuvchi algoritm", "Takrorlanuvchi algoritm", "Cheksiz sikl"], correct: 0 },
                 { q: "Quyidagilardan qaysi biri axborotni kiritish qurilmasi hisoblanadi?", options: ["Sichqoncha", "Karnay (Dinamik)", "Monitor", "Printer"], correct: 0 },
                 { q: "Kompyuter viruslaridan himoyalanish uchun qanday dastur ishlatiladi?", options: ["Antivirus", "Paint", "Excel", "Notepad"], correct: 0 },
-                { q: "Axborotni tashish va saqlash uchun nima ishlatiladi?", options: ["Flesh xotira (USB Flash)", "Karnay", "Kabel", "Tok"], correct: 0 }
+                { q: "Axborotni tashish va saqlash uchun nima ishlatiladi?", options: ["Flesh xotira (USB Flash)", "Karnay", "Kabel", "Tok"], correct: 0 },
+                { q: "Kompyuterning 'miyasi' deb qaysi qurilma aytiladi?", options: ["Protsessor (CPU)", "Monitor", "Klaviatura", "Qattiq disk"], correct: 0 },
+                { q: "Matn terish uchun asosiy qurilma qaysi?", options: ["Klaviatura", "Sichqoncha", "Printer", "Skaner"], correct: 0 },
+                { q: "Qog'ozdagi rasmni kompyuterga o'tkazish uchun nima ishlatiladi?", options: ["Skaner", "Printer", "Karnay", "Proyektor"], correct: 0 },
+                { q: "Operativ xotira (RAM) qanday vazifani bajaradi?", options: ["Vaqtinchalik ma'lumotlarni saqlaydi", "Doimiy saqlaydi", "O'yinlarni chizadi", "Internet tarqatadi"], correct: 0 },
+                { q: "Fayl nomining oxiridagi nuqtadan keyingi qism nima deb ataladi?", options: ["Fayl kengaytmasi (Format)", "Parol", "Hajm", "Manzil"], correct: 0 },
+                { q: "Quyidagilardan qaysi biri operatsion tizim hisoblanadi?", options: ["Windows", "Microsoft Word", "Google Chrome", "Paint"], correct: 0 },
+                { q: "Kompyuterni o'chirish uchun qaysi tugmadan foydalanish to'g'ri?", options: ["Shut down", "Restart", "Sleep", "Log off"], correct: 0 },
+                { q: "Internetga ulanish uchun nima kerak?", options: ["Router yoki modem", "Fleshka", "Printer", "Karnay"], correct: 0 },
+                { q: "Axborotni qog'ozga chiqarib beruvchi qurilma:", options: ["Printer", "Skaner", "Mikrofon", "Kamera"], correct: 0 },
+                { q: "Quyidagilardan qaysi biri o'yinchoq yoki ta'limiy muhit (vizual dasturlash)?", options: ["Scratch", "Excel", "Photoshop", "Winamp"], correct: 0 }
             ],
             6: [
                 { q: "1 Megabayt (MB) necha Kilobaytga (KB) teng?", options: ["1024 KB", "1000 KB", "512 KB", "2048 KB"], correct: 0 },
@@ -421,8 +439,18 @@
                 { q: "Elektron jadval dasturini ko'rsating:", options: ["Microsoft Excel", "Microsoft Word", "Paint", "Notepad"], correct: 0 },
                 { q: "Quyidagilardan qaysi biri mantiqiy amalga kiradi?", options: ["AND (VA)", "PLUS (Qo'shish)", "PRINT (Chiqarish)", "SAVE (Saqlash)"], correct: 0 },
                 { q: "Kompyuter xotirasining eng kichik manzillanadigan birligi nima?", options: ["Bayt", "Bit", "Kilobayt", "Gigabayt"], correct: 0 },
-                { q: "Dastur bajarilish jarayonida o'z qiymatini o'zgartira oladigan kattalik nima deb ataladi?", options: ["O'zgaruvchi (Variable)", "Konstafta", "Fayl", "Matn"], correct: 0 },
-                { q: "Prezentatsiya yaratishda har bir sahifa qanday nomlanadi?", options: ["Slayd", "Sahifa", "Varoq", "Kadr"], correct: 0 }
+                { q: "Dastur bajarilish jarayonida o'z qiymatini o'zgartira oladigan kattalik nima deb ataladi?", options: ["O'zgaruvchi (Variable)", "Konstanta", "Fayl", "Matn"], correct: 0 },
+                { q: "Prezentatsiya yaratishda har bir sahifa qanday nomlanadi?", options: ["Slayd", "Sahifa", "Varoq", "Kadr"], correct: 0 },
+                { q: "1 Gigabayt necha Megabaytga teng?", options: ["1024 MB", "1000 MB", "500 MB", "2048 MB"], correct: 0 },
+                { q: "Axborotni uzatish tezligi nimada o'lchanadi?", options: ["Bit/sekund", "Gers", "Metr", "Bayt"], correct: 0 },
+                { q: "Qaysi qurilma ma'lumotlarni uzoq vaqt saqlash uchun mo'ljallangan?", options: ["Qattiq disk (HDD/SSD)", "RAM", "Protsessor", "Karnay"], correct: 0 },
+                { q: "Veb-sahifalarni ochib beruvchi dastur qanday ataladi?", options: ["Brauzer", "Redaktor", "Drayver", "Antivirus"], correct: 0 },
+                { q: "Elektron pochtaning qisqartirilgan nomi:", options: ["E-mail", "Web", "FTP", "HTTP"], correct: 0 },
+                { q: "Kompyuter virusi o'zi nima?", options: ["Zararli dasturiy kod", "Buzilgan detal", "Chang", "Tok urishi"], correct: 0 },
+                { q: "Quyidagilardan qaysi biri qidiruv tizimi (Search engine)?", options: ["Google", "Word", "Excel", "Paint"], correct: 0 },
+                { q: "Fayl hajmini kichraytirish jarayoni nima deb ataladi?", options: ["Arxivlash", "Nusxalash", "O'chirish", "Shifrlash"], correct: 0 },
+                { q: "Axborot xavfsizligini ta'minlash uchun nima o'rnatiladi?", options: ["Parol va antivirus", "Katta monitor", "Tez internet", "Qimmat Sichqoncha"], correct: 0 },
+                { q: "Quyidagilardan qaysi biri mantiqiy shart operatoriga misol bo'la oladi?", options: ["If (Agar)", "Print", "Save", "Open"], correct: 0 }
             ],
             7: [
                 { q: "O'n oltilik sanoq sistemasida 10 soni qanday harf bilan belgilanadi?", options: ["A", "B", "F", "X"], correct: 0 },
@@ -434,7 +462,17 @@
                 { q: "Mantiqiy ko'paytirish (AND) amali natijasi 1 ga teng bo'lishi uchun nima talab qilinadi?", options: ["Barcha kirish qiymatlari 1 bo'lishi kerak", "Faqat bittasi 1 bo'lishi yetarli", "Barchasi 0 bo'lishi kerak", "Farqi yo'q"], correct: 0 },
                 { q: "Informatikada 'Graf' nima?", options: ["Cho'qqilar va qirralardan iborat tuzilma", "Faqat chiziqli jadval", "Rasm formati", "Internet tezligi"], correct: 0 },
                 { q: "C++ tilida butun sonlarni e'lon qilish uchun qaysi kalit so'z ishlatiladi?", options: ["int", "float", "char", "string"], correct: 0 },
-                { q: "Axborotni shifrlash nima uchun qo'llaniladi?", options: ["Xavfsizlikni ta'minlash va ruxsatsiz o'qishdan saqlash", "Fayl hajmini kattalashtirish", "Internetni tezlashtirish", "Kompyuterni qizdirish"], correct: 0 }
+                { q: "Axborotni shifrlash nima uchun qo'llaniladi?", options: ["Xavfsizlikni ta'minlash va ruxsatsiz o'qishdan saqlash", "Fayl hajmini kattalashtirish", "Internetni tezlashtirish", "Kompyuterni qizdirish"], correct: 0 },
+                { q: "IP-manzil nechta qismdan (oktetdan) iborat?", options: ["4 ta", "2 ta", "8 ta", "16 ta"], correct: 0 },
+                { q: "Python tilida o'zgaruvchi yaratish uchun nima qilinadi?", options: ["Nom berib qiymat o'zlashtiriladi (masalan: x = 5)", "Faqat e'lon qilinadi", "Kompilyator ishlatiladi", "Fayl ochiladi"], correct: 0 },
+                { q: "Dasturlashda 'Debugging' so'zi nimani anglatadi?", options: ["Xatolarni qidirish va tuzatish", "O'yin o'ynash", "Kod yozishni boshlash", "Kompyuterni tozalash"], correct: 0 },
+                { q: "Veb-sahifaga bezak berish uchun qaysi til ishlatiladi?", options: ["CSS", "HTML", "Python", "C++"], correct: 0 },
+                { q: "Mantiqiy qo'shish (OR) amali qachon 0 ga teng bo'ladi?", options: ["Barcha kirish qiymatlari 0 bo'lganda", "Bittasi 1 bo'lganda", "Ikkalasi 1 bo'lganda", "Doim 0 bo'ladi"], correct: 0 },
+                { q: "Kompyuter tarmoqlari qamrov ko'lamiga ko'ra qanday turlarga bo'linadi?", options: ["LAN, WAN, MAN", "Bit, Bayt, KB", "HDD, SSD, RAM", "CPU, GPU, ALU"], correct: 0 },
+                { q: "Fayllarni tarmoq orqali uzatish protokoli qaysi?", options: ["FTP", "HTTP", "SMTP", "TCP"], correct: 0 },
+                { q: "Python tilida sharhlar (kommentariya) qaysi belgi bilan boshlanadi?", options: ["#", "//", "/*", "$"], correct: 0 },
+                { q: "Sayt manzili qanday nomlanadi?", options: ["URL", "IP", "DNS", "RAM"], correct: 0 },
+                { q: "Algoritmning xossalari qaysilar?", options: ["Tushunarlilik, aniqlik, ommaviylik, natijalylik", "Faqat uzunlik va hajm", "Faqat tezlik", "Fayl turi"], correct: 0 }
             ],
             8: [
                 { q: "Tarmoq topologiyasi turlariga qaysilar kiradi?", options: ["Yulduzsimon, halqasimon, magistral", "Faqat chiziqli", "Faqat doiraviy", "Faqat tarqoq"], correct: 0 },
@@ -446,7 +484,17 @@
                 { q: "Funksiya deganda nima tushuniladi?", options: ["Muayyan vazifani bajaruvchi nomlangan kod bo'lagi", "Faqat o'zgaruvchi", "Xato turi", "Xotira bloki"], correct: 0 },
                 { q: "Ma'lumotlar bazasida ustunlar qanday nomlanadi?", options: ["Maydon (Field)", "Yozuv (Record)", "Jadval", "Kortej"], correct: 0 },
                 { q: "Python'da ro'yxat (list) elementlarini qavs ichida yozamiz?", options: ["To'rtburchak qavs [...]", "Mavhum qavs {...}", "Dumaloq qavs (...)", "Burchakli qavs <...>"], correct: 0 },
-                { q: "Kiberxavfsizlikda 'Phishing' (Fishing) atamasi nimani anglatadi?", options: ["Soxta sahifalar orqali shaxsiy ma'lumotlarni o'g'irlash", "Tezkor internetni ulash", "Dastur kodini tekshirish", "Virusni yo'q qilish"], correct: 0 }
+                { q: "Kiberxavfsizlikda 'Phishing' (Fishing) atamasi nimani anglatadi?", options: ["Soxta sahifalar orqali shaxsiy ma'lumotlarni o'g'irlash", "Tezkor internetni ulash", "Dastur kodini tekshirish", "Virusni yo'q qilish"], correct: 0 },
+                { q: "Python tilida sikl operatorlari qaysilar?", options: ["for va while", "if va else", "try va except", "def va return"], correct: 0 },
+                { q: "Tarmoqqa ulangan har bir qurilmaning unikal apparat manzili qanday ataladi?", options: ["MAC-manzil", "IP-manzil", "DNS", "URL"], correct: 0 },
+                { q: "Ma'lumotlar bazasini boshqarish tizimi (MBBT) qisqartmasi:", options: ["DBMS / MBBT", "HTML", "CPU", "RAM"], correct: 0 },
+                { q: "Python'da elementlarni ro'yxat oxiriga qo'shish metodi:", options: ["append()", "add()", "push()", "insert()"], correct: 0 },
+                { q: "Veb-sahifada foydalanuvchi bosadigan tugma yaratish uchun HTML tegi:", options: ["<button>", "<text>", "<table>", "<img>"], correct: 0 },
+                { q: "Ikki lik sanoq sistemasida 111 + 1 qo'shilsa nima hosil bo'ladi?", options: ["1000", "112", "10", "1111"], correct: 0 },
+                { q: "Axborotni himoya qilishda simmetrik shifrlashning asosiy xususiyati:", options: ["Shifrlash va deshifrlash uchun bitta kalit ishlatiladi", "Kalit umuman ishlatilmaydi", "Faqat ochiq kalit bo'ladi", "Faqat internetda ishlaydi"], correct: 0 },
+                { q: "Python'da string uzunligini aniqlovchi funksiya:", options: ["len()", "size()", "count()", "length()"], correct: 0 },
+                { q: "Dasturlashda 'Infinite loop' (Cheksiz sikl) nima?", options: ["Hech qachon to'xtamaydigan sikl", "Faqat bir marta ishlaydigan sikl", "Xato yozilgan funksiya", "Tez ishlaydigan dastur"], correct: 0 },
+                { q: "Kompyuter tarmoqlarida domen nomlarini IP-manzilga o'zgartiruvchi xizmat:", options: ["DNS", "FTP", "TCP", "HTTP"], correct: 0 }
             ],
             9: [
                 { q: "Al-Xorazmiy nomi bilan bog'liq 'Algoritm' tushunchasining dastlabki ma'nosi nima edi?", options: ["Hisob-kitob qoidalari va amallari ketma-ketligi", "Faqat kompyuter dasturi", "Matematik formula", "Geometrik shakl"], correct: 0 },
@@ -458,7 +506,17 @@
                 { q: "Dasturlashda rekursiya nima?", options: ["Funksiyaning o'zini o'zi chaqirishi", "Sikldan chiqib ketish", "Massivni teskari o'girish", "Xatolarni ushlash"], correct: 0 },
                 { q: "Logik amallardan biri bo'lgan XOR (Istisno yoki) amali qachon 1 ga teng bo'ladi?", options: ["Kirish qiymatlari har xil bo'lganda (0 va 1, yoki 1 va 0)", "Ikkalasi ham 1 bo'lganda", "Ikkalasi ham 0 bo'lganda", "Doim 1 bo'ladi"], correct: 0 },
                 { q: "Python tilida 'dictionary' (lug'at) ma'lumotlar tuzilmasi nimadan iborat?", options: ["Kalit va qiymat (Key-Value) juftligidan", "Faqat tartiblangan raqamlardan", "Faqat matnlardan", "Indekslardan"], correct: 0 },
-                { q: "Ma'lumotlar bazasining asosiy kaliti (Primary Key) vazifasi nima?", options: ["Har bir yozuvni unikal (takrorlanmas) aniqlash", "Faqat parol saqlash", "Jadval hajmini kamaytirish", "Rang berish"], correct: 0 }
+                { q: "Ma'lumotlar bazasining asosiy kaliti (Primary Key) vazifasi nima?", options: ["Har bir yozuvni unikal (takrorlanmas) aniqlash", "Faqat parol saqlash", "Jadval hajmini kamaytirish", "Rang berish"], correct: 0 },
+                { q: "Bubble sort (Pufakchali saralash) algoritmining o'rtacha vaqt murakkabligi qanday?", options: ["O(N^2)", "O(N log N)", "O(N)", "O(1)"], correct: 0 },
+                { q: "C++ tilida ko'rsatkich (pointer) nimani saqlaydi?", options: ["Boshqa o'zgaruvchining xotira manzilini", "O'zgaruvchining qiymatini", "Fayl nomini", "Massiv uzunligini"], correct: 0 },
+                { q: "Dastur tarjima qilinayotganda sintaktik xato nima sababdan kelib chiqadi?", options: ["Til qoidalari buzilganda", "Internet yo'qolganda", "Kompyuter qizib ketganda", "Sichqoncha ishlamaganda"], correct: 0 },
+                { q: "Graf nazariyasida 'Yo'naltirilgan graf' qanday nomlanadi?", options: ["Digraph (Orgraf)", "Tree", "Matrix", "List"], correct: 0 },
+                { q: "Python'da set (to'plam) ma'lumotlar tuzilmasining asosiy xususiyati:", options: ["Takrorlanuvchi elementlarni saqlamaydi", "Tartiblangan bo'ladi", "Faqat matn oladi", "Indekslash mumkin"], correct: 0 },
+                { q: "TCP protokoli UDP'dan qanday farq qiladi?", options: ["Ma'lumotlar to'g'ri yetib borganini kafolatlaydi", "Seanssiz ishlaydi", "Juda tez va xavfsiz emas", "Faqat lokal tarmoqda ishlaydi"], correct: 0 },
+                { q: "Tarmoq xavfsizligini ta'minlash uchun qaysi qurilma yoki dastur ishlatiladi?", options: ["Firewall (Brandmauer)", "Switch", "Hub", "Router"], correct: 0 },
+                { q: "Ikki o'lchamli massiv (matritsa) e'lon qilish uchun nima ishlatiladi?", options: ["Ichma-ich joylashgan ro'yxatlar / massivlar", "Faqat bitta o'zgaruvchi", "Oddiy matn", "Fayl"], correct: 0 },
+                { q: "Python tilida funksiya yaratish uchun qaysi kalit so'z ishlatiladi?", options: ["def", "function", "fun", "lambda"], correct: 0 },
+                { q: "Kompyuterda sonlarni manfiy ko'rinishda saqlash uchun qaysi kodlash keng qo'llaniladi?", options: ["Ikki qo'shimcha kod (Two's complement)", "To'g'ridan-to'g'ri kod", "Teskari kod", "O'nlik kod"], correct: 0 }
             ],
             10: [
                 { q: "Saralash algoritmlari orasida eng yaxshi o'rtacha murakkablikka ega bo'lgan solishtiruvli algoritm qaysi?", options: ["O(N log N) (Merge Sort / Quick Sort)", "O(N^2) (Bubble Sort)", "O(N) (Linear)", "O(1) (Constant)"], correct: 0 },
@@ -470,7 +528,17 @@
                 { q: "Obyektga yo'naltirilgan dasturlash (OYD) tamoyillariga nima kirmaydi?", options: ["Kommutatsiya", "Inkapsulyatsiya", "Polimorfizm", "Merosxo'rlik"], correct: 0 },
                 { q: "Graflarda eng qisqa yo'lni topish uchun mo'ljallangan algoritm qaysi?", options: ["Deykstra (Dijkstra) algoritmi", "Pufakchali saralash", "Evklid", "Binar qidiruv"], correct: 0 },
                 { q: "C++ tilida dinamik massiv vazifasini bajaruvchi konteyner qaysi?", options: ["std::vector", "std::stack", "std::queue", "std::string"], correct: 0 },
-                { q: "Ma'lumotlar bazasida jadvallar orasidagi bog'lanish turlariga nima kirmaydi?", options: ["One-to-Infinity (Cheksiz)", "One-to-One (Birni-birga)", "One-to-Many (Birni-ko'pga)", "Many-to-Many (Ko'pni-ko'pga)"], correct: 0 }
+                { q: "Ma'lumotlar bazasida jadvallar orasidagi bog'lanish turlariga nima kirmaydi?", options: ["One-to-Infinity (Cheksiz)", "One-to-One (Birni-birga)", "One-to-Many (Birni-ko'pga)", "Many-to-Many (Ko'pni-ko'pga)"], correct: 0 },
+                { q: "Binar qidiruv daraxtida (BST) har bir tugunning chap bolasining qiymatidan ota tugun qiymati qanday bo'ladi?", options: ["Katta bo'ladi", "Kichik bo'ladi", "Teng bo'ladi", "Farqi yo'q"], correct: 0 },
+                { q: "Hashing (Xesh) funksiyasining asosiy maqsadi nima?", options: ["Ma'lumotni tezkor qidirish uchun kalitga moslash", "Faylni shifrlash", "Internet tezligini oshirish", "Xotirani tozalash"], correct: 0 },
+                { q: "Obyektga yo'naltirilgan dasturlashda 'Polimorfizm' nimani anglatadi?", options: ["Turli xil obyektlarning bir xil nomdagi metodga turlicha javob berishi", "Ma'lumotlarni yashirish", "Yangi sinf yaratish", "Xatolarni ushlash"], correct: 0 },
+                { q: "Dinamik dasturlash usulida 'Fibonachchi' sonlarini hisoblash vaqt murakkabligini qanday darajaga tushiradi?", options: ["O(N)", "O(2^N)", "O(N^2)", "O(log N)"], correct: 0 },
+                { q: "Kruskal algoritmi qaysi masalani yechish uchun ishlatiladi?", options: ["Minimal karkas daraxtini (MST) topish", "Eng qisqa yo'l", "Maksimal oqim", "Saralash"], correct: 0 },
+                { q: "Ma'lumotlar bazasida tranzaksiyalarning ACID xossasidagi 'I' harfi nimani anglatadi?", options: ["Isolation (Izolyatsiya)", "Integer", "Index", "Interface"], correct: 0 },
+                { q: "Dasturlashda 'Deadlock' (O'lik holat) nima?", options: ["Ikki yoki undan ortiq jarayon bir-birining resursini kutib qotib qolishi", "Dasturning tez tugashi", "Xotira yetishmasligi", "Internet uzilishi"], correct: 0 },
+                { q: "Tarmoq arxitekturasida OSI modeli nechta qatlamdan iborat?", options: ["7 ta", "4 ta", "5 ta", "3 ta"], correct: 0 },
+                { q: "C++ tilida destruktor vazifasi nima?", options: ["Obyekt yo'q qilinayotganda xotirani tozalash", "Obyekt yaratish", "Funksiyani chaqirish", "Kompilyatsiya qilish"], correct: 0 },
+                { q: "Greedy (Ochko'z) algoritm har bir qadamda qanday qaror qabul qiladi?", options: ["Eng maqbul mahalliy (local optimal) yechimni", "Eng yomon yechimni", "Tasodifiy yechimni", "Oxirgi yechimni"], correct: 0 }
             ],
             11: [
                 { q: "NP-to'liq (NP-Complete) masalalar sinfiga oid mashhur misolni toping:", options: ["Sayohat qiluvchi sotuvchi masalasi (TSP)", "Ikki sonni qo'shish masalasi", "Chiziqli tenglamani yechish", "Massivni tartiblash"], correct: 0 },
@@ -482,7 +550,17 @@
                 { q: "Tarmoq arxitekturasida TCP va UDP protokollari qaysi qatlamga tegishli?", options: ["Transport qatlami", "Fizik qatlam", "Ilova qatlami", "Kanal qatlami"], correct: 0 },
                 { q: "Big O notation (Katta O belgisi) nimani ifodalaydi?", options: ["Algoritmning resurs (vaqt/xotira) sarfi o'sish tezligini", "Kompyuter protsessorining chastotasini", "Internet tezligini", "Dastur fayl hajmini"], correct: 0 },
                 { q: "Dasturiy ta'minotni ishlab chiqishda 'Agile' metodologiyasining asosiy g'oyasi nima?", options: ["O'zgarishlarga tez moslashish va bosqichma-bosqich yetkazib berish", "Faqat loyiha oxirida sinovdan o'tkazish", "Qat'iy va o'zgarmas reja bo'yicha ishlash", "Hujjat yozishni cheklash"], correct: 0 },
-                { q: "Matematik mantiqda 'De Morgan' qonunlari nima uchun qo'llaniladi?", options: ["Mantiqiy ifodalarni soddalashtirish va inkor qilish uchun", "Faqat sonlarni bo'lish uchun", "Matritsalarni ko'paytirish uchun", "Fayllarni arxivlash uchun"], correct: 0 }
+                { q: "Matematik mantiqda 'De Morgan' qonunlari nima uchun qo'llaniladi?", options: ["Mantiqiy ifodalarni soddalashtirish va inkor qilish uchun", "Faqat sonlarni bo'lish uchun", "Matritsalarni ko'paytirish uchun", "Fayllarni arxivlash uchun"], correct: 0 },
+                { q: "Kiberxavfsizlikda 'Man-in-the-middle' (O'rtadagi odam) hujumi nima?", options: ["Hujumchi ikki tomon aloqasini yashirincha kuzatishi va o'zgartirishi", "Parolni topib olish", "Kompyuterni virus bilan yo'q qilish", "Internet tezligini pasaytirish"], correct: 0 },
+                { q: "Parallel dasturlashda 'Race condition' (Poyga holati) qachon yuzaga keladi?", options: ["Bir nechta oqim bir vaqtning o'zida bitta xotira manziliga o'zgartirish kiritganda", "Dastur tez ishga tushganda", "Internet uzilib qolganda", "Xotira yetmaganda"], correct: 0 },
+                { q: "Funksional dasturlash tiliga misol:", options: ["Haskell (yoki Lisp, Scala)", "C++", "Assembly", "HTML"], correct: 0 },
+                { q: "Kompilyator va Interpreter farqi nimada?", options: ["Kompilyator kodni butunlay tarjima qiladi, interpreter qatorma-qat bajaradi", "Farqi yo'q", "Interpreter faqat C++ uchun", "Kompilyator sekin ishlaydi"], correct: 0 },
+                { q: "Ma'lumotlar bazasida 'NoSQL' bazalariga misol:", options: ["MongoDB", "MySQL", "PostgreSQL", "Oracle"], correct: 0 },
+                { q: "Kriptografiyadagi xesh funksiyasining asosiy xususiyatlaridan biri:", options: ["Bir tomonlama (deshifrlab bo'lmaydigan) bo'lishi", "Osonlikcha teskari o'girilishi", "Kalit talab qilishi", "Hajmini kattalashtirishi"], correct: 0 },
+                { q: "Dasturiy ta'minotni test qilishda 'White-box' testing nimani anglatadi?", options: ["Dasturning ichki kodi va tuzilishini bilgan holda test qilish", "Faqat tashqi ko'rinishini tekshirish", "Faqat foydalanuvchi fikrini o'rganish", "Internet tezligini tekshirish"], correct: 0 },
+                { q: "Tarmoqqa kirish qatlamida ma'lumotlar qanday birlikda uzatiladi?", options: ["Kadr (Frame)", "Paket", "Bayt", "Bit"], correct: 0 },
+                { q: "Sun'iy neyron tarmoqlarda 'Activation function' (Aktivatsiya funksiyasi) vazifasi:", options: ["Neyron chiqishini nolinear ko'rinishga keltirish", "Ma'lumotni o'chirish", "Faylni saqlash", "Xotirani tozalash"], correct: 0 },
+                { q: "P, NP, NP-hard masalalar sinfi qaysi sohaga tegishli?", options: ["Hisoblash nazariyasi (Complexity theory)", "Web dizayn", "Tarmoq arxitektura", "Kompyuter grafikasi"], correct: 0 }
             ],
             expert: [
                 { q: "Segment daraxti (Segment Tree) yordamida massivda kesmada yig'indini topish va elementni yangilash operatsiyalarining vaqt murakkabligi qanday?", options: ["O(log N)", "O(N)", "O(N log N)", "O(1)"], correct: 0 },
@@ -494,7 +572,17 @@
                 { q: "2-SAT masalasini chiziqli vaqtda O(N+M) yechish uchun qaysi ma'lumotlar tuzilmasi yoki algoritm qo'llaniladi?", options: ["Kuchli bog'langan komponentlar (Tarjan / Kosaraju)", "Faqat q Greedy usul", "Dinamik dasturlash", "Faqat binar qidiruv"], correct: 0 },
                 { q: "Maksimal oqim (Maximum Flow) masalasini yechish uchun Ford-Fulkerson metodining optimallashtirilgan turi qanday nomlanadi?", options: ["Edmonds-Karp algoritmi", "Kruskal algoritmi", "Prim algoritmi", "Floyd-Warshall algoritmi"], correct: 0 },
                 { q: "Fenwick tree (Binary Indexed Tree) tuzilmasining xotira sig'imi qanday?", options: ["O(N)", "O(N log N)", "O(N^2)", "O(1)"], correct: 0 },
-                { q: "Dinamik dasturlashda 'Bitmask DP' usuli odatda qanday cheklangan chegaradagi masalalar uchun ishlatiladi?", options: ["N kichik bo'lgan hollarda (odatda N <= 20)", "Juda katta N sonlar uchun", "Faqat massivsiz masalalar uchun", "Faqat satrlar uchun"], correct: 0 }
+                { q: "Dinamik dasturlashda 'Bitmask DP' usuli odatda qanday cheklangan chegaradagi masalalar uchun ishlatiladi?", options: ["N kichik bo'lgan hollarda (odatda N <= 20)", "Juda katta N sonlar uchun", "Faqat massivsiz masalalar uchun", "Faqat satrlar uchun"], correct: 0 },
+                { q: "Aho-Corasick algoritmi nimaga mo'ljallangan?", options: ["Matn ichidan bir nechta qidiruv so'zlarini bir vaqtning o'zida topish", "Eng qisqa yo'l", "Sonlarni tartiblash", "Faylni shifrlash"], correct: 0 },
+                { q: "Heavy-Light Decomposition (HLD) texnikasi qaysi sohada ishlatiladi?", options: ["Daraxtsimon tuzilmalardagi so'rovlarni tez bajarish (masalan, yo'lda qiymat topish)", "Faqat matnlar bilan ishlash", "Tarmoq xavfsizligi", "Ma'lumotlar bazasi"], correct: 0 },
+                { q: "Floyd-Warshall algoritmining vaqt murakkabligi qanday?", options: ["O(N^3)", "O(N^2)", "O(N log N)", "O(N)"], correct: 0 },
+                { q: "Suffix Array (Suffiks massiv) qurish uchun ishlatiladigan samarali algoritm:", options: ["DC3 / SA-IS", "Bubble sort", "Dijkstra", "BFS"], correct: 0 },
+                { q: "B-Tree va B+ Tree ma'lumotlar tuzilmalari asosan qayerda ishlatiladi?", options: ["Ma'lumotlar bazalari va fayl tizimlarida (diskda saqlash)", "Operativ xotirada", "Veb dizaynda", "Tarmoq protokollarida"], correct: 0 },
+                { q: "Mos kelishlar nazariyasida (Matching) 'Kuhn algoritmi' nima uchun ishlatiladi?", options: ["Borg'langan bipartite (ikki pallali) graflarda eng katta juftlikni (Maximum Bipartite Matching) topish", "Eng qisqa yo'l", "Sikl topish", "Matritsa ko'paytirish"], correct: 0 },
+                { q: "Centroid Decomposition (Markaziy parchalanish) texnikasi qaysi tuzilmaga qo'llaniladi?", options: ["Daraxtlarga (Trees)", "Matriralarga", "Chiziqli massivlarga", "Graf sikllariga"], correct: 0 },
+                { q: "Persistent Data Structure (Doimiy ma'lumotlar tuzilmasi) o'ziga xosligi nimada?", options: ["Har bir o'zgarishdan keyin oldingi versiyalar ham saqlanib qoladi", "Faqat bir marta yoziladi", "O'chib ketmaydi", "Faqat diskda turadi"], correct: 0 },
+                { q: "FFT (Tez Furiye almashtirishi) dasturlash olimpiadalarida ko'pincha nima uchun ishlatiladi?", options: ["Katta sonlarni yoki ko'phadlarni (Polynomials) tez ko'paytirish uchun", "Matn qidirish", "Graf chizish", "Rasm hajmini kichraytirish"], correct: 0 },
+                { q: "Simulated Annealing (Sovutish simulyatsiyasi) qanday turdagi algoritm hisoblanadi?", options: ["Evristik / ehtimollik optimizatsiya algoritmi", "Aniq yechim beruvchi algoritm", "Binar qidiruv turi", "To'liq tekshiruv (Brute-force)"], correct: 0 }
             ]
         };
 
@@ -648,10 +736,19 @@
             document.getElementById("result-user-name").innerText = `Ishtirokchi: ${userName} (${labelTitle})`;
             document.getElementById("final-score-text").innerText = `Umumiy to'plangan ball: ${score}`;
 
-            // Reytingga yangi natijani qo'shish
-            leaderboard.push({ name: userName, score: score, category: labelTitle });
-            leaderboard.sort((a, b) => b.score - a.score); // Ball bo'yicha kamayish tartibida saralash
-            leaderboard = leaderboard.slice(0, 5); // Faqat top 5 talikni saqlash
+            let existingUserIndex = leaderboard.findIndex(item => item.name === userName);
+
+            if (existingUserIndex !== -1) {
+                if (score > leaderboard[existingUserIndex].score) {
+                    leaderboard[existingUserIndex].score = score;
+                    leaderboard[existingUserIndex].category = labelTitle;
+                }
+            } else {
+                leaderboard.push({ name: userName, score: score, category: labelTitle });
+            }
+
+            leaderboard.sort((a, b) => b.score - a.score);
+            leaderboard = leaderboard.slice(0, 5);
             localStorage.setItem('olimpiada_leaderboard', JSON.stringify(leaderboard));
 
             let readinessElement = document.getElementById("readiness-text");
@@ -669,8 +766,8 @@
                 let div = document.createElement("div");
                 div.className = `review-item ${item.isCorrect ? 'review-correct' : 'review-incorrect'}`;
                 div.innerHTML = `<strong>${index + 1}. ${item.question}</strong><br>
-                                 Sizning javobingiz: ${item.selected} ${item.isCorrect ? '✅' : '❌'}<br>
-                                 ${!item.isCorrect ? `To'g'ri javob: <b>${item.correctAnswer}</b>` : ''}`;
+                               Sizning javobingiz: ${item.selected} ${item.isCorrect ? '✅' : '❌'}<br>
+                               ${!item.isCorrect ? `To'g'ri javob: <b>${item.correctAnswer}</b>` : ''}`;
                 reviewContainer.appendChild(div);
             });
 
